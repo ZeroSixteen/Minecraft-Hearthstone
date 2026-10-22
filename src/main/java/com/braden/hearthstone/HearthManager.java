@@ -64,7 +64,7 @@ public final class HearthManager {
 		if (invalidKey == null) {
 			ServerLevel level = (ServerLevel) player.level();
 			level.playSound(null, player.blockPosition(), SoundEvents.BEACON_ACTIVATE, SoundSource.PLAYERS, 0.8F, 1.4F);
-			player.displayClientMessage(Component.translatable("message.hearthstone.casting", HearthConfig.CAST_SECONDS), true);
+			actionBar(player, Component.translatable("message.hearthstone.casting", HearthConfig.CAST_SECONDS));
 		}
 	}
 
@@ -102,7 +102,7 @@ public final class HearthManager {
 			if (cast.invalidKey != null) {
 				it.remove();
 				player.stopUsingItem();
-				player.displayClientMessage(Component.translatable(cast.invalidKey), true);
+				actionBar(player, Component.translatable(cast.invalidKey));
 				continue;
 			}
 
@@ -130,13 +130,13 @@ public final class HearthManager {
 				level.sendParticles(ParticleTypes.PORTAL, player.getX(), player.getY() + 1.0, player.getZ(), 6, 0.4, 0.8, 0.4, 0.2);
 			}
 			if (remaining > 0 && remaining % 20 == 0) {
-				player.displayClientMessage(Component.translatable("message.hearthstone.casting", remaining / 20), true);
+				actionBar(player, Component.translatable("message.hearthstone.casting", remaining / 20));
 			}
 		}
 	}
 
 	private static void interrupted(ServerPlayer player) {
-		player.displayClientMessage(Component.translatable("message.hearthstone.interrupted"), true);
+		actionBar(player, Component.translatable("message.hearthstone.interrupted"));
 		((ServerLevel) player.level()).playSound(null, player.blockPosition(), SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 0.8F, 1.0F);
 	}
 
@@ -144,7 +144,7 @@ public final class HearthManager {
 		// Still false so a respawn anchor isn't drained by hearthing.
 		TeleportTransition destination = player.findRespawnPositionAndUseSpawnBlock(false, TeleportTransition.DO_NOTHING);
 		if (destination.missingRespawnBlock()) {
-			player.displayClientMessage(Component.translatable("message.hearthstone.bed_missing"), true);
+			actionBar(player, Component.translatable("message.hearthstone.bed_missing"));
 			return;
 		}
 
@@ -159,6 +159,11 @@ public final class HearthManager {
 		to.sendParticles(ParticleTypes.PORTAL, player.getX(), player.getY() + 1.0, player.getZ(), 40, 0.4, 0.8, 0.4, 0.5);
 
 		player.getCooldowns().addCooldown(new ItemStack(ModItems.HEARTHSTONE), HearthConfig.COOLDOWN_TICKS);
+	}
+
+	/** Shows a message above the hotbar. One place to change if Mojang renames this again. */
+	private static void actionBar(ServerPlayer player, Component message) {
+		player.sendSystemMessage(message, true);
 	}
 
 	private HearthManager() {
