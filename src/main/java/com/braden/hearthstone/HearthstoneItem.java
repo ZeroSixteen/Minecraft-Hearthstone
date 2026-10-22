@@ -38,10 +38,10 @@ public class HearthstoneItem extends Item {
 		return HearthConfig.castTicks();
 	}
 
-	/** The hold-up pose. Other options: BOW, TOOT_HORN, BRUSH, BLOCK, SPEAR, CROSSBOW, BUNDLE. */
+	/** The hand pose while channeling. Set "useAnimation" in config/hearthstone.json (NONE = no special pose). */
 	@Override
 	public ItemUseAnimation getUseAnimation(ItemStack stack) {
-		return ItemUseAnimation.SPYGLASS;
+		return HearthConfig.useAnimation();
 	}
 
 	/** Runs when the use timer completes. The teleport itself is deferred to the end of the server tick. */

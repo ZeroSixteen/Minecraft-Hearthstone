@@ -184,9 +184,8 @@ public final class HearthManager {
 				}
 			}
 
-			if (remaining % 4 == 0) {
-				ServerLevel level = (ServerLevel) player.level();
-				level.sendParticles(ParticleTypes.PORTAL, player.getX(), player.getY() + 1.0, player.getZ(), 6, 0.4, 0.8, 0.4, 0.2);
+			if (HearthConfig.showParticles()) {
+				swirl(player, cast.totalTicks - remaining, cast.totalTicks);
 			}
 		}
 	}
@@ -206,18 +205,45 @@ public final class HearthManager {
 
 		ServerLevel from = (ServerLevel) player.level();
 		from.playSound(null, player.blockPosition(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
-		from.sendParticles(ParticleTypes.PORTAL, player.getX(), player.getY() + 1.0, player.getZ(), 40, 0.4, 0.8, 0.4, 0.5);
+		if (HearthConfig.showParticles()) {
+			burst(from, player);
+		}
 
 		player.teleport(destination);
 
 		ServerLevel to = (ServerLevel) player.level();
 		to.playSound(null, player.blockPosition(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
-		to.sendParticles(ParticleTypes.PORTAL, player.getX(), player.getY() + 1.0, player.getZ(), 40, 0.4, 0.8, 0.4, 0.5);
+		if (HearthConfig.showParticles()) {
+			burst(to, player);
+		}
 
 		int cooldown = HearthConfig.cooldownTicks();
 		if (cooldown > 0) {
 			player.getCooldowns().addCooldown(new ItemStack(ModItems.HEARTHSTONE), cooldown);
 		}
+	}
+
+	/** Two blue flames spiral up around the player, tightening toward them as the channel nears its end. */
+	private static void swirl(ServerPlayer player, int elapsedTicks, int totalTicks) {
+		ServerLevel level = (ServerLevel) player.level();
+		double progress = Math.min(1.0, elapsedTicks / (double) totalTicks);
+		double radius = 1.2 - 0.8 * progress;
+		double angle = elapsedTicks * 0.45;
+		double rise = ((elapsedTicks % 30) / 30.0) * 2.0;
+		for (int i = 0; i < 2; i++) {
+			double a = angle + i * Math.PI;
+			level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME,
+					player.getX() + Math.cos(a) * radius,
+					player.getY() + rise,
+					player.getZ() + Math.sin(a) * radius,
+					1, 0.0, 0.0, 0.0, 0.0);
+		}
+	}
+
+	/** Blue flash with a few white sparkles, used when leaving and arriving. */
+	private static void burst(ServerLevel level, ServerPlayer player) {
+		level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, player.getX(), player.getY() + 1.0, player.getZ(), 40, 0.4, 0.8, 0.4, 0.12);
+		level.sendParticles(ParticleTypes.END_ROD, player.getX(), player.getY() + 1.0, player.getZ(), 14, 0.4, 0.8, 0.4, 0.08);
 	}
 
 	/** Plain chat message (not the action bar). */

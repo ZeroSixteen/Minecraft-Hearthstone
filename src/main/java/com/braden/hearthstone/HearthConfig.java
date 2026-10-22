@@ -4,6 +4,8 @@ import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.world.item.ItemUseAnimation;
 
 /**
  * Settings live in config/hearthstone.json (created on first launch).
@@ -36,16 +39,34 @@ public final class HearthConfig {
 		boolean interruptOnDamage = true;
 		/** Show the blue cast bar at the top of the screen. */
 		boolean showCastBar = true;
+		/** Blue swirl while casting and a burst on arrival. */
+		boolean showParticles = true;
+		/**
+		 * Hand pose while channeling. Try NONE, BLOCK, SPYGLASS, TOOT_HORN, BOW, BRUSH, SPEAR, CROSSBOW, EAT, DRINK.
+		 * NONE means no special pose at all.
+		 */
+		String useAnimation = "BLOCK";
 	}
 
 	private static volatile Data data = new Data();
+	private static volatile ItemUseAnimation animation = ItemUseAnimation.SPYGLASS;
 	private static long loadedStamp = Long.MIN_VALUE;
+
+	private static void apply(Data newData) {
+		data = newData;
+		try {
+			animation = ItemUseAnimation.valueOf(String.valueOf(newData.useAnimation).trim().toUpperCase(Locale.ROOT));
+		} catch (IllegalArgumentException e) {
+			LOGGER.warn("Unknown useAnimation '{}' in hearthstone.json. Valid options: {}",
+					newData.useAnimation, Arrays.toString(ItemUseAnimation.values()));
+		}
+	}
 
 	/** Reads the config file (writing defaults if it doesn't exist yet). Cheap if the file hasn't changed. */
 	public static synchronized void reload() {
 		try {
 			if (!Files.exists(FILE)) {
-				data = new Data();
+				apply(new Data());
 				Files.createDirectories(FILE.getParent());
 				try (Writer writer = Files.newBufferedWriter(FILE)) {
 					GSON.toJson(data, writer);
@@ -63,7 +84,7 @@ public final class HearthConfig {
 			try (Reader reader = Files.newBufferedReader(FILE)) {
 				Data parsed = GSON.fromJson(reader, Data.class);
 				if (parsed != null) {
-					data = parsed;
+					apply(parsed);
 				}
 			}
 		} catch (Exception e) {
@@ -93,6 +114,14 @@ public final class HearthConfig {
 
 	public static boolean showCastBar() {
 		return data.showCastBar;
+	}
+
+	public static boolean showParticles() {
+		return data.showParticles;
+	}
+
+	public static ItemUseAnimation useAnimation() {
+		return animation;
 	}
 
 	private HearthConfig() {
