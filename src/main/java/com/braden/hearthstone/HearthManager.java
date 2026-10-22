@@ -94,6 +94,7 @@ public final class HearthManager {
 		ServerBossEvent bar = null;
 		if (invalidKey == null && HearthConfig.showCastBar()) {
 			bar = new ServerBossEvent(
+					UUID.randomUUID(),
 					Component.translatable("message.hearthstone.casting", secondsFor(totalTicks)),
 					BossEvent.BossBarColor.BLUE,
 					BossEvent.BossBarOverlay.PROGRESS);
