@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "hearthstone",
+  "version": "${version}",
+  "name": "Hearthstone",
+  "description": "A WoW-style Hearthstone. Channel it for a few seconds to teleport back to your bed, then wait out the cooldown.",
+  "authors": ["Braden"],
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.braden.hearthstone.HearthstoneMod"]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.1",
+    "minecraft": "~26.2",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}

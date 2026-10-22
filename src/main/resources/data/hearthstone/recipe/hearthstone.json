@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SWS",
+    "WEW",
+    "SWS"
+  ],
+  "key": {
+    "S": "minecraft:stone",
+    "W": "#minecraft:wool",
+    "E": "minecraft:ender_pearl"
+  },
+  "result": {
+    "id": "hearthstone:hearthstone",
+    "count": 1
+  }
+}
