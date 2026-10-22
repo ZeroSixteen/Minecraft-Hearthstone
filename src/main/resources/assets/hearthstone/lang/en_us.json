@@ -1,7 +1,7 @@
 {
   "item.hearthstone.hearthstone": "Hearthstone",
-  "message.hearthstone.casting": "Returning home in %s...",
-  "message.hearthstone.no_bed": "You have no bed to return to.",
+  "message.hearthstone.casting": "Returning home in %ss",
+  "message.hearthstone.no_bed": "You have no bed to return to. Right-click a bed to set one.",
   "message.hearthstone.bed_missing": "Your bed is missing or blocked.",
   "message.hearthstone.interrupted": "Hearthstone interrupted."
 }

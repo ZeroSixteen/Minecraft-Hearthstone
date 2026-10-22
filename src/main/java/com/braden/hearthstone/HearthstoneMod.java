@@ -12,6 +12,7 @@ public class HearthstoneMod implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		HearthConfig.reload(); // creates config/hearthstone.json on first launch
 		ModItems.initialize();
 		HearthManager.init();
 	}

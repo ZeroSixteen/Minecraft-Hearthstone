@@ -1,23 +1,40 @@
 # Hearthstone (Fabric, Minecraft 26.2)
 
-A WoW-style Hearthstone. Hold right-click to raise the stone and channel for 10 seconds; if you keep holding, stay still and don't take damage, you teleport to your bed (or respawn anchor), across dimensions if needed. A 30-minute cooldown then starts.
+A WoW-style Hearthstone. Hold right-click to raise the stone and channel (10 seconds by default); if you keep holding, stay still and don't take damage, you teleport to your bed (or respawn anchor), across dimensions if needed. A cooldown (30 minutes by default) then starts.
 
-- Cast time, cooldown and movement tolerance: `HearthConfig.java`
+## Setting your home
+
+Right-click a bed. This works in the daytime too (vanilla sets your respawn point when you click a bed, even if you can't sleep yet), and sleeping in it works as well. The Hearthstone always returns you to your current respawn point.
+
+## Config
+
+On first launch the mod creates `config/hearthstone.json` in your instance folder (in Prism: instance, then the `minecraft` folder, then `config`). Edit it with any text editor; changes apply the next time you start a cast, no restart needed.
+
+| Key | Default | Meaning |
+| --- | --- | --- |
+| `castSeconds` | 10.0 | How long the channel takes |
+| `cooldownMinutes` | 30.0 | Cooldown after a successful hearth (0 = none, 0.5 = 30 seconds) |
+| `moveToleranceBlocks` | 0.25 | How far you can drift before the cast is interrupted |
+| `interruptOnMove` | true | false lets you move while channeling |
+| `interruptOnDamage` | true | false keeps channeling when you get hurt |
+| `showCastBar` | true | Blue cast bar at the top of the screen |
+
+## Other details
+
 - Interrupts: releasing right-click, moving, taking damage, switching slots
+- Progress shows on a boss-style cast bar and in chat, not the action bar, so it doesn't clash with other mods that write there
 - Hold-up pose: `getUseAnimation` in `HearthstoneItem.java` (SPYGLASS by default; BOW, TOOT_HORN, BRUSH etc. also work)
-- Needs a valid, unobstructed bed (set by sleeping in it). Respawn anchors work too and are not drained.
+- Respawn anchors work too and are not drained
 - Craft: stone in the corners, wool on the edges, ender pearl in the middle (`data/hearthstone/recipe/hearthstone.json`)
-- Also in the Tools & Utilities creative tab
+- Also in the Tools & Utilities creative tab, or `/give @s hearthstone:hearthstone`
 
 ## Easiest build: let GitHub do it (nothing to install)
 
 1. Make a free account at github.com and create a new repository (private is fine).
-2. Click "uploading an existing file" and drag in everything from this folder, including the hidden `.github` folder. (If your file explorer hides it, turn on "show hidden items".)
-3. Commit. Open the repo's **Actions** tab; the "Build Hearthstone" run starts by itself (about 2-3 minutes).
+2. Upload the project files, then add `.github/workflows/main.yml` with the contents of `.github/workflows/build.yml` from this folder.
+3. Open the repo's **Actions** tab; the "Build Hearthstone" run starts by itself (about 2-3 minutes).
 4. When it's green, click the run, scroll to **Artifacts**, and download `hearthstone-jar`. Unzip it to get `hearthstone-1.0.0.jar`.
 5. In Prism, open your 26.2 instance, go to Mods, Add file, and pick that jar. Fabric API must be in the same instance.
-
-If the run fails, open it, copy the red error text, and send it to me.
 
 ## Manual build
 
